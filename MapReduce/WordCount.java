@@ -1,5 +1,9 @@
 package mapReduce;
 
+/*
+*@author Sagar Jain
+*Problem Statement - To get the word count from input file.
+*/
 import java.io.IOException;
 import java.util.StringTokenizer;
 
