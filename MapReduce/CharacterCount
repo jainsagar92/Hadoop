@@ -1,0 +1,72 @@
+package mapReduce;
+
+/**
+ * @author Sagar Jain
+ * Problem Statement - To get the character count of each character from input file.
+ */
+import java.io.IOException;
+
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
+public class CharacterCount {
+
+	//Mapper
+	public static class Map extends Mapper<IntWritable, Text, Text, IntWritable>{
+		public void map (IntWritable key, Text value, Context context) throws IOException, InterruptedException {
+			String line = value.toString();
+			char [] charArray = line.toCharArray();
+			
+			for(char c : charArray) {
+				value.set(String.valueOf(c));
+				context.write(value, new IntWritable(1));
+			}
+		}
+		
+	}
+	
+	//Reducer
+	public static class Reduce extends Reducer<Text, IntWritable, Text, IntWritable>{
+		public void reduce(Text key, Iterable<IntWritable> value, Context context) throws IOException, InterruptedException {
+			int sum = 0;
+			
+			for(IntWritable i : value) { //try to write this java 8
+				sum+=i.get(); 
+			}
+			
+			context.write(key, new IntWritable(sum));
+			
+			/*
+			 * //If we want to get count of a, b, c, d
+			String character = key.toString();
+			if(character == "a" || character == "b" || character == "c" || character == "d")
+			context.write(key, new IntWritable(sum));
+			*/
+			
+		}
+	}
+	
+	//Driver
+	public static void main(String s[]) throws Exception {
+		org.apache.hadoop.conf.Configuration conf= new org.apache.hadoop.conf.Configuration();
+		Job job = new Job(conf, "SagarCharacterCount");
+		job.setJarByClass(CharacterCount.class);
+		job.setMapperClass(Map.class);
+		job.setReducerClass(Reduce.class);
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(IntWritable.class);
+		job.setInputFormatClass(TextInputFormat.class);
+		job.setOutputFormatClass(TextOutputFormat.class);
+		
+		TextInputFormat.addInputPath(job, new Path(s[0]));
+		TextOutputFormat.setOutputPath(job, new Path(s[1]));
+		
+		System.exit(job.waitForCompletion(true)? 0 : 1);
+	}
+}
