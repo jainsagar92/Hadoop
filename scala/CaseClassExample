@@ -1,0 +1,8 @@
+object CaseClassExample {
+   def main(args : Array[String]){
+   var test = CaseClassTest(1,"Sagar")
+     println(test.id)
+    }
+ }
+     
+     case class CaseClassExample(id: Int, name : String)
