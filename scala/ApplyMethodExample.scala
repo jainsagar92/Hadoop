@@ -5,8 +5,9 @@ object ApplyMethodExample {
    //below line will call apply method of class
    a.apply()
    
-   //below line will automatically call the apply method of object
+   //below both lines will automatically call the apply method of object
    ApplyMethodExample()
+   ApplyMethodExample.apply()   
    
    }
    
