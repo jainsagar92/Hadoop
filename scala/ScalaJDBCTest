@@ -1,0 +1,40 @@
+//Very similar to java
+
+import java.sql.DriverManager;
+import java.sql.Connection;
+
+
+object ScalaJDBCTestObject{
+  def main(args: Array[String]){
+    val jdbcDemo = new ScalaJDBCTest()
+    jdbcDemo.scalaJdbcDemo()
+  }
+}
+class ScalaJDBCTest {
+
+  def scalaJdbcDemo() {
+    val driver = "oracle.jdbc.driver.OracleDriver"
+    val url = "jdbc:oracle:thin:@localhost:1521:xe"
+    val u_name = "LOCAL_EIP"
+    val pass = "LOCAL_EIP"
+
+    Class.forName(driver)
+    val connection = DriverManager.getConnection(url, u_name, pass)
+
+    if (connection != null)
+      println("Connection created.!" + connection)
+      
+      val statement = connection.createStatement()
+      
+      val resultSet = statement.executeQuery("select * from org")
+      
+      while(resultSet.next()){
+        val name = resultSet.getString("name")
+        println("Name directly from db - "+ name)
+        
+      }
+      
+      
+  }
+
+}
